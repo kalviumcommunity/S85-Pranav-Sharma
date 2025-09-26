@@ -1,4 +1,4 @@
-package com.school;
+package com.School;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +32,7 @@ public class Main {
         schoolPeople.add(teacher1);
         schoolPeople.add(staff1);
 
+        // Demonstrate polymorphic call through a helper method
         displaySchoolDirectory(schoolPeople);
 
         // --- Course Setup ---
@@ -42,40 +43,39 @@ public class Main {
         courses.add(course2);
 
         System.out.println("\n\n--- Available Courses ---");
-        for (Course c : courses) {
-            c.displayDetails();
-        }
+        for(Course c : courses) c.displayDetails();
 
-        // --- Attendance Recording ---
+
+        // --- Attendance Recording (Using Student and Course objects) ---
         List<AttendanceRecord> attendanceLog = new ArrayList<>();
         attendanceLog.add(new AttendanceRecord(student1, course1, "Present"));
         attendanceLog.add(new AttendanceRecord(student2, course1, "Absent"));
         attendanceLog.add(new AttendanceRecord(student1, course2, "Daydreaming")); // Invalid status
 
         System.out.println("\n\n--- Attendance Log ---");
-        if (attendanceLog.isEmpty()) {
+        if (attendanceLog.isEmpty()){
             System.out.println("No attendance records yet.");
         } else {
             for (AttendanceRecord ar : attendanceLog) {
-                ar.displayRecord();
+                ar.displayRecord(); // displayRecord now uses Student/Course objects
             }
         }
 
-        // --- Saving Data ---
+        // --- Saving Data (Storable interface still uses IDs for simplicity) ---
         System.out.println("\n\n--- Saving Data to Files ---");
         FileStorageService storageService = new FileStorageService();
-
+        // We need to convert List<Person> to List<Student> or handle saving different person types.
+        // For simplicity, let's save only students from the schoolPeople list if they are students.
         List<Student> studentsToSave = new ArrayList<>();
-        for (Person p : schoolPeople) {
-            if (p instanceof Student) {
+        for(Person p : schoolPeople){
+            if(p instanceof Student){
                 studentsToSave.add((Student) p);
             }
         }
-
-        if (!studentsToSave.isEmpty()) {
+        if(!studentsToSave.isEmpty()){
             storageService.saveData(studentsToSave, "students.txt");
         } else {
-            System.out.println("No student data to save from school directory.");
+             System.out.println("No student data to save from school directory.");
         }
 
         storageService.saveData(courses, "courses.txt");
